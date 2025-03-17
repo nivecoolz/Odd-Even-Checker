@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Odd or Even Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f0f2f5;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Enter a number to check if it's Odd or Even</h2>
+  <input type="number" id="numberInput" placeholder="Enter a number" />
+  <button onclick="checkNumber()">Check</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function checkNumber() {
+      const num = parseInt(document.getElementById('numberInput').value);
+      const resultDiv = document.getElementById('result');
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number: num })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          resultDiv.innerHTML = `The number ${data.number} is <strong>${data.result.toUpperCase()}</strong>.`;
+        } else {
+          resultDiv.innerHTML = `<span style="color:red;">${data.error}</span>`;
+        }
+
+      } catch (error) {
+        resultDiv.innerHTML = `<span style="color:red;">Error contacting server.</span>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
